@@ -1,0 +1,29 @@
+/myapp
+|--cmd/
+|   |-- main.go   //executable package 
+|   
+|--pkg/
+|   |-- utils.go
+|
+|--modules/
+|   |-- mymodule.go
+|
+|--internal/
+|   |-- config 
+|       |-- config.go
+|   |-- handel.go
+|       |--handel.go
+|-- api/
+|   |--v1/
+|        |--api.go
+|
+|--script/
+|    |--setup.sh
+|
+|--configs/
+|   |--config.yaml
+|
+|--.gitignore 
+|--go.mod
+|--go.sum
+|--README.md

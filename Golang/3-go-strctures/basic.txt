@@ -1,0 +1,6 @@
+/myapp
+    |-- main.go
+    |-- utils.go
+    |-- README.md
+    |-- go.mod
+    |-- go.sum
