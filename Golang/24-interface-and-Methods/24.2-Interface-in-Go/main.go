@@ -58,6 +58,19 @@ type SUV struct {
 	Height int
 }
 
+type minn struct {
+	Brand  string
+	Height int
+}
+
+func (m minn) StartEngine() string {
+	return fmt.Sprintln("Engine starterd ")
+}
+
+func (m minn) Drive() string {
+	return fmt.Sprintf("The car is driving")
+}
+
 func (s Sedan) StartEngine() string {
 	return fmt.Sprintf("%s Brand car has stared  engine silently\n", s.Brand)
 }
@@ -80,5 +93,8 @@ func main() {
 	car = Sedan{Brand: "Honda", Length: 15}
 	DefineCar(car)
 	car = SUV{Brand: "Jeep", Height: 20}
+	DefineCar(car)
+
+	car = minn{Brand: "NewModel", Height: 123}
 	DefineCar(car)
 }

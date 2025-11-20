@@ -13,8 +13,11 @@ import (
 //decorater
 
 /*
-
- */
+The Singleton Design Pattern ensures that a class has only one instance and
+provides a global point of access to it.
+This pattern is useful when you need exactly one object (like a config or logger) shared across your application,
+ and you want to prevent multiple instances from being created, especially in concurrent code.
+*/
 
 type config struct {
 	//here som value
