@@ -1,16 +1,16 @@
 package handlers
 
 import (
+	"car/models"
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
 	"sync"
 )
 
-func carHandler(w http.ResponseWriter, r *http.Request) {
+func CarHandler(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	entity := strings.TrimPrefix(path, "/cars")
 	entity = strings.Trim(entity, "/")
@@ -44,14 +44,17 @@ var mu sync.Mutex
 func createCar(w http.ResponseWriter, r *http.Request) {
 	mu.Lock()
 	defer mu.Unlock()
-	var car Car
+
+	car := &models.Car{}
+
 	if err := json.NewDecoder(r.Body).Decode(&car); err != nil {
 		http.Error(w, " json format is woring ", http.StatusBadRequest)
 		return
 	}
-	id := rand.Intn(10000)
-	car.ID = id
-	Cars[car.ID] = car
+
+	car.Insert()
+
+	fmt.Println("Car saved to the inventory with the id: ", car.Id)
 
 	w.Header().Set("Content-Type", "Application/json")
 	w.WriteHeader(http.StatusCreated)
