@@ -35,6 +35,7 @@ func CarHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			id, _ := strconv.Atoi(entity)
 			deleteCar(w, r, id)
+			deleteCar(w, r, id)
 		}
 	}
 }
