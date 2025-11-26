@@ -90,6 +90,7 @@ func deleteCar(w http.ResponseWriter, r *http.Request, id int) {
 		return
 	}
 	delete(Cars, id)
+	delete(Cars, id)
 	fmt.Println("the Id is found and deleted :", id)
 
 	w.Header().Set("Content-Type", "application/json")
