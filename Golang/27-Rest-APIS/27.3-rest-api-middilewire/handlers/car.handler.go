@@ -89,8 +89,6 @@ func deleteCar(w http.ResponseWriter, r *http.Request, id int) {
 		http.Error(w, "Delete request is not valid , id please check", http.StatusNotFound)
 		return
 	}
-	delete(Cars, id)
-	delete(Cars, id)
 	fmt.Println("the Id is found and deleted :", id)
 
 	w.Header().Set("Content-Type", "application/json")
