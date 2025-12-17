@@ -1,6 +1,9 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
@@ -56,17 +59,53 @@ func carHandeler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createCar(w http.ResponseWriter, r *http.Request) {
+	mu.Lock()
+	defer mu.Unlock()
+	var car Car
+	err := json.NewDecoder(r.Body).Decode(&car)
+	if err != nil {
+		http.Error(w, "Incorecct Json Body", http.StatusBadRequest)
+		return
+	}
 
+	id := rand.Intn(1000)
+	Cars[id] = car
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(car)
 }
 
 func getCar(w http.ResponseWriter, id int) {
-
+	mu.Lock()
+	defer mu.Unlock()
+	car, ok := Cars[id]
+	if !ok {
+		http.Error(w, "Incorrect rest call", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusAccepted)
+	json.NewEncoder(w).Encode(car)
 }
 
 func deleteCar(w http.ResponseWriter, id int) {
+	mu.Lock()
+	defer mu.Unlock()
 
+	_, ok := Cars[id]
+	if !ok {
+		http.Error(w, "Incorrect delete call , car is not present", http.StatusNotFound)
+		return
+	}
+
+	delete(Cars, id)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func main() {
-
+	http.HandleFunc("/cars", carHandeler)
+	http.HandleFunc("/", carHandeler)
+	fmt.Println("Server Started to listen the API Request")
+	http.ListenAndServe(":3034", nil)
 }
