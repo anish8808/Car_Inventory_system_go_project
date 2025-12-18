@@ -35,9 +35,15 @@ func CarHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			id, _ := strconv.Atoi(entity)
 			deleteCar(w, r, id)
-			deleteCar(w, r, id)
-			deleteCar(w, r, id)
 		}
+	case "UPDATE":
+		if entity == "" {
+			http.Error(w, "Incorrect delete request", http.StatusBadRequest)
+		} else {
+			id, _ := strconv.Atoi(entity)
+			updateCar(w, r, id)
+		}
+
 	}
 }
 
@@ -66,10 +72,11 @@ func createCar(w http.ResponseWriter, r *http.Request) {
 func getCar(w http.ResponseWriter, r *http.Request, id int) {
 	mu.Lock()
 	defer mu.Unlock()
-	car, ok := Cars[id]
-
-	if !ok {
-		http.Error(w, "Car not found", http.StatusNotFound)
+	car := &models.Car{}
+	car.Id = id
+	if err := car.Get(); err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
@@ -83,14 +90,36 @@ func getCar(w http.ResponseWriter, r *http.Request, id int) {
 func deleteCar(w http.ResponseWriter, r *http.Request, id int) {
 	mu.Lock()
 	defer mu.Unlock()
-	_, ok := Cars[id]
+	car := &models.Car{}
+	car.Id = id
 
-	if !ok {
-		http.Error(w, "Delete request is not valid , id please check", http.StatusNotFound)
-		return
-	}
+	car.Delete()
+
 	fmt.Println("the Id is found and deleted :", id)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+}
+
+func updateCar(w http.ResponseWriter, r *http.Request, id int) {
+	mu.Lock()
+	defer mu.Unlock()
+	car := &models.Car{}
+
+	if err := json.NewDecoder(r.Body).Decode(&car); err != nil {
+		http.Error(w, "Incorrect json format", http.StatusBadRequest)
+		return
+	}
+	car.Id = id
+	if err := car.Update(); err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	fmt.Println("the Id is found and updated :", id)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(car)
 }
